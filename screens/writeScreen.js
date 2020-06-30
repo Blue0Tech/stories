@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TextInput, Dimensions, TouchableOpacity, Platform, KeyboardAvoidingView, ToastAndroid } from 'react-native';
+import { Text, TextInput, Dimensions, TouchableOpacity, Platform, KeyboardAvoidingView, ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import db from '../config';
 
@@ -31,11 +31,15 @@ export default class writeScreen extends React.Component {
 	addStoryOnline=async(author,name,story,timestamp)=>{ //firebase
 		db.ref('stories/all/'+author+'/'+name).update({
 			contents : story,
-			timestamp : timestamp
+			timestamp : timestamp,
+			author : author, // to assist search function
+			name : name // also to assist search function
 		});
 	}
 	displayToast=()=>{
-		ToastAndroid.showWithGravity("Your story has been submitted!",ToastAndroid.SHORT,ToastAndroid.TOP);
+		if(Platform.OS === "android") {
+			ToastAndroid.showWithGravity("Your story has been submitted!",ToastAndroid.SHORT,ToastAndroid.TOP);
+		}
 	}
 	render() {
 		const behavior = Platform.OS === "ios" ? "position" : "";
