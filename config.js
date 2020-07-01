@@ -7,9 +7,11 @@ var firebaseConfig = {
     projectId: "db-stories",
     storageBucket: "db-stories.appspot.com",
     messagingSenderId: "164266568039",
-    appId: "1:164266568039:web:542ce2c7d13657d64627c2"
+    appId: "1:164266568039:web:542ce2c7d13657d64627c2",
+	measurementId: "G-S8HD20VWFR"
   };
 
   firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
 
   export default firebase.database();
