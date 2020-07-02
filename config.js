@@ -1,13 +1,13 @@
 import firebase from 'firebase';
 
 var firebaseConfig = {
-    apiKey: "AIzaSyD7lOKCeOh7mfTOulu57_v0ErCaHXL_XT0",
-    authDomain: "db-stories.firebaseapp.com",
-    databaseURL: "https://db-stories.firebaseio.com",
-    projectId: "db-stories",
-    storageBucket: "db-stories.appspot.com",
-    messagingSenderId: "164266568039",
-    appId: "1:164266568039:web:542ce2c7d13657d64627c2"
+    apiKey: "AIzaSyDJ9jyySMCQdAPxebwFZeE2_79j21QADcU",
+    authDomain: "db-story.firebaseapp.com",
+    databaseURL: "https://db-story.firebaseio.com",
+    projectId: "db-story",
+    storageBucket: "db-story.appspot.com",
+    messagingSenderId: "118365037170",
+    appId: "1:118365037170:web:96ef522839cdb5cef058eb"
   };
 
   firebase.initializeApp(firebaseConfig);
