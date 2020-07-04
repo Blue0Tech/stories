@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyboardAvoidingView, Platform, Text, Dimensions, ScrollView } from 'react-native';
+import { KeyboardAvoidingView, Platform, Text, Dimensions, ScrollView, FlatList } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import db from '../config';
 
@@ -12,7 +12,8 @@ export default class readScreen extends React.Component {
         this.state = {
             searchText : "",
             data : {},
-            results : []
+            results : [],
+            isRefreshing : false
         }
     }
     updateSearch=async()=>{
@@ -31,7 +32,8 @@ export default class readScreen extends React.Component {
             }
         }
         this.setState({
-            results : results
+            results : results,
+            isRefreshing : false
         });
     }
     render() {
@@ -43,7 +45,8 @@ export default class readScreen extends React.Component {
             backgroundColor : '#00ffff',
             borderColor : '#000000',
             borderBottomWidth : 1,
-            borderTopWidth : 1
+            borderTopWidth : 1,
+            margin : 10
         };
         return (
             <KeyboardAvoidingView style={{flex : 1, alignContent : 'center'}} behavior={behavior} enabled>
@@ -66,13 +69,25 @@ export default class readScreen extends React.Component {
                         true
                     }
                 ></SearchBar>
-                {this.state.results.map((result,index)=>(
+                <FlatList
+                    data={this.state.results}
+                    renderItem={({ item, index }) => 
                     <ScrollView key={index} contentContainerStyle={ScrollViewStyle}>
-                    <Text style={{fontSize : '1.25em', fontWeight : 'bold'}}><Text style={{fontWeight : "bold"}}>Author: </Text>{result.author}</Text>
-                    <Text style={{fontSize : '1em', fontWeight : 'normal'}}><Text style={{fontWeight : "bold"}}>Title: </Text>{result.name}</Text>
-                    <Text style={{fontSize : '0.85em', fontWeight : 'normal'}}><Text style={{fontWeight : "bold"}}>Preview: </Text>{result.contents.replace("\n"," ").substring(0,Dimensions.get('window').width*0.3)} ...</Text>
+                        <Text style={{fontSize : '1.25em', fontWeight : 'bold'}}>Author: {item.author}</Text>
+                        <Text style={{fontSize : '1em', fontWeight : 'normal'}}><Text style={{fontWeight : "bold"}}>Title: </Text>{item.name}</Text>
+                        <Text style={{fontSize : '0.85em', fontWeight : 'normal'}}><Text style={{fontWeight : "bold"}}>Preview: </Text>{item.contents.replace("\n"," ").substring(0,Dimensions.get('window').width*0.3)} ...</Text>
                     </ScrollView>
-                ))}
+                    }
+                    onRefresh={() => {
+                        this.setState({
+                            isRefreshing : true
+                        });
+                        this.updateSearch()
+                    }}
+                    refreshing={
+                        this.state.isRefreshing
+                    }
+                />
             </KeyboardAvoidingView>
         )
     }
