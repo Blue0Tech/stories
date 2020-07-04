@@ -9,11 +9,17 @@ import writeScreen from './screens/writeScreen';
 import loginScreen from './screens/loginScreen';
 import readIcon from './assets/IconRead64px.png';
 import writeIcon from './assets/IconWrite64px.png';
-import stackNavigation from './stackNavigation';
-import StackNavigation from './stackNavigation';
+import tabNavigation from './tabNavigation';
 
-export default function App() {
-  return (
-    <StackNavigation/>
-  );
-}
+const stack = createStackNavigator({ // order of list of components affects what content appears, you still have to research all the properties of createStackNavigator() in react-navigation 4.x
+    homeScreen : {
+        screen : tabNavigation
+    },
+    loginScreen : {
+      screen : loginScreen
+    }
+});
+
+const StackNavigation = createAppContainer(stack);
+
+export default StackNavigation;
