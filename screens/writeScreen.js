@@ -7,29 +7,14 @@ export default class writeScreen extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			author : "Enter your name here!",
-			name : "Enter your story name here!",
-			story : "Enter your own story here!",
+			author : "",
+			name : "",
+			story : "",
 			stories : []
 		}
 	}
-	addStory=async(story)=>{ //local storage
-		var stories = await AsyncStorage.getItem("stories");
-		if(!stories) {
-			var object = ["This is a sample story"];
-			object = JSON.stringify(object);
-			await AsyncStorage.setItem("stories",object);
-			stories = await AsyncStorage.getItem("stories");
-		}
-		console.log(stories);
-		stories = JSON.parse(stories);
-		stories.push(story);
-		console.log(stories);
-		stories = JSON.stringify(stories);
-		await AsyncStorage.setItem("stories",stories);
-	}
 	addStoryOnline=async(author,name,story,timestamp)=>{ //firebase
-		db.ref('stories/all/'+author+'/'+name).update({
+		db.database().ref('stories/all/'+author+'/'+name).update({
 			contents : story,
 			timestamp : timestamp,
 			author : author, // to assist search function
@@ -40,6 +25,10 @@ export default class writeScreen extends React.Component {
 		if(Platform.OS === "android") {
 			ToastAndroid.showWithGravity("Your story has been submitted!",ToastAndroid.SHORT,ToastAndroid.TOP);
 		}
+	}
+	replaceText=(text)=>{
+		text = text.replace('.','').replace('$','').replace('[','').replace(']','').replace('#','').replace('/','');
+		return text;
 	}
 	render() {
 		const behavior = Platform.OS === "ios" ? "position" : "";
@@ -56,11 +45,15 @@ export default class writeScreen extends React.Component {
 						}}
 						onChangeText = {
 							text => {
+								text = this.replaceText(text);
 								this.setState({ author : text });
 							}
 						}
 						value = {
 							this.state.author
+						}
+						placeholder = {
+							"Enter your name here!"
 						}
 					/>
 					<TextInput
@@ -73,11 +66,15 @@ export default class writeScreen extends React.Component {
 						}}
 						onChangeText = {
 							text => {
+								text = this.replaceText(text);
 								this.setState({ name : text });
 							}
 						}
 						value = {
 							this.state.name
+						}
+						placeholder = {
+							"Enter your story name here!"
 						}
 					/>
 					<TextInput
@@ -97,6 +94,9 @@ export default class writeScreen extends React.Component {
 						}
 						value = {
 							this.state.story
+						}
+						placeholder = {
+							"Enter your own story here!"
 						}
 					/>
 					<TouchableOpacity

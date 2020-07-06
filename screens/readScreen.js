@@ -17,7 +17,7 @@ export default class readScreen extends React.Component {
         }
     }
     updateSearch=async()=>{
-        await db.ref('stories/all').orderByKey().on('value', (all) => {
+        await db.database().ref('stories/all').orderByKey().on('value', (all) => {
             this.setState({
                 data: all.val()
             });
