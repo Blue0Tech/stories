@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyboardAvoidingView, Platform, Text, Dimensions, ScrollView, FlatList } from 'react-native';
+import { KeyboardAvoidingView, Platform, Text, Dimensions, View, FlatList } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import db from '../config';
 
@@ -38,7 +38,7 @@ export default class readScreen extends React.Component {
     }
     render() {
         const behavior = Platform.OS === "ios" ? "position" : "";
-        const ScrollViewStyle = {
+        const ViewStyle = {
             width : Dimensions.get('window').width,
             alignContent : 'center',
             alignItems : 'center',
@@ -72,11 +72,11 @@ export default class readScreen extends React.Component {
                 <FlatList
                     data={this.state.results}
                     renderItem={({ item, index }) => 
-                    <ScrollView key={index} contentContainerStyle={ScrollViewStyle}>
+                    <View key={index} style={ViewStyle}>
                         <Text style={{fontSize : '1.25em', fontWeight : 'bold'}}>Author: {item.author}</Text>
                         <Text style={{fontSize : '1em', fontWeight : 'normal'}}><Text style={{fontWeight : "bold"}}>Title: </Text>{item.name}</Text>
                         <Text style={{fontSize : '0.85em', fontWeight : 'normal'}}><Text style={{fontWeight : "bold"}}>Preview: </Text>{item.contents.replace("\n"," ").substring(0,Dimensions.get('window').width*0.3)} ...</Text>
-                    </ScrollView>
+                    </View>
                     }
                     onRefresh={() => {
                         this.setState({
