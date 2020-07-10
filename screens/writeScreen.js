@@ -14,7 +14,7 @@ export default class writeScreen extends React.Component {
 		}
 	}
 	addStoryOnline=async(author,name,story,timestamp)=>{ //firebase
-		db.database().ref('stories/all/'+author+'/'+name).update({
+		db.ref('stories/all/'+author+'/'+name).update({
 			contents : story,
 			timestamp : timestamp,
 			author : author, // to assist search function

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
-import db from '../config';
+import * as firebase  from 'firebase';
 
 export default class profileScreen extends React.Component {
     constructor() {
@@ -25,21 +25,21 @@ export default class profileScreen extends React.Component {
           });
     }
     signin=async(email,password)=>{
-        db.auth().signInWithEmailAndPassword(email,password).then(()=>{
+        firebase.auth().signInWithEmailAndPassword(email,password).then(()=>{
             alert("success");
         }).catch((error)=>{
             alert(error.message);
         });
     }
     signup=async(email,password)=>{
-        db.auth().createUserWithEmailAndPassword(email,password).then(()=>{
+        firebase.auth().createUserWithEmailAndPassword(email,password).then(()=>{
             alert("success");
         }).catch((error)=>{
             alert(error.message);
         });
     }
     signout=async()=>{
-        db.auth().signOut().then(()=>{
+        firebase.auth().signOut().then(()=>{
             alert("success");
         }).catch((error)=>{
             alert(error.message);
@@ -100,6 +100,7 @@ export default class profileScreen extends React.Component {
                         placeholder = {
                             "Enter your password"
                         }
+                        secureTextEntry={true}
                     />
                     <TouchableOpacity
                         style = {{
