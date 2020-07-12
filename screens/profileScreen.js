@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TextInput, Dimensions, TouchableOpacity } from 'react-native';
+import { Text, View, TextInput, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import * as firebase  from 'firebase';
 
 export default class profileScreen extends React.Component {
@@ -9,56 +9,69 @@ export default class profileScreen extends React.Component {
             loggedIn : false,
             email : "",
             password : ""
-        }
+        };
     }
     checkLoggedIn=async()=>{
-        firebase.auth().onAuthStateChanged(function(user) {
+        console.log("checking logged in");
+        var loggedIn = this.state.loggedIn;
+        await firebase.auth().onAuthStateChanged(function(user) {
+            console.log(user);
             if (user) {
-              this.setState({
-                  loggedIn : true
-              });
+            loggedIn = true;
             } else {
-              this.setState({
-                  loggedIn : false
-              });
+            loggedIn = false;
             }
-          });
-    }
-    signin=async(email,password)=>{
-        firebase.auth().signInWithEmailAndPassword(email,password).then(()=>{
-            alert("success");
-        }).catch((error)=>{
-            alert(error.message);
+        });
+        console.log(loggedIn);
+        this.setState({
+            loggedIn : loggedIn
         });
     }
-    signup=async(email,password)=>{
-        firebase.auth().createUserWithEmailAndPassword(email,password).then(()=>{
-            alert("success");
+    signin=async(email,password)=>{
+        await firebase.auth().signInWithEmailAndPassword(email,password).then(()=>{
+            Alert.alert("success");
+            console.log("success");
         }).catch((error)=>{
-            alert(error.message);
+            Alert.alert(error.message);
+            console.error(error.message);
+        });
+    await this.checkLoggedIn();
+    }
+    signup=async(email,password)=>{
+        await firebase.auth().createUserWithEmailAndPassword(email,password).then(()=>{
+            Alert.alert("success");
+            console.log("success");
+        }).catch((error)=>{
+            Alert.alert(error.message);
+            console.error(error.message);
         });
     }
     signout=async()=>{
-        firebase.auth().signOut().then(()=>{
-            alert("success");
+        await firebase.auth().signOut().then(()=>{
+            Alert.alert("success");
+            console.log("success");
         }).catch((error)=>{
-            alert(error.message);
+            Alert.alert(error.message);
+            console.error(error.message);
         });
+    await this.checkLoggedIn();
     }
     render() {
         if(this.state.loggedIn) {
             return (
                 <View>
-                    <TouchableOpacity>
-                    style = {{
-                        alignSelf : 'center',
-                        width : Dimensions.get('window').width*0.4,
-                        height : 20,
-                        alignContent : 'center',
-                        justifyContent : 'center',
-                        backgroundColor : '#a8b61e'
-                    }}
-                    onPress={()=>{this.signout()}}
+                    <TouchableOpacity
+                        style = {{
+                            alignSelf : 'center',
+                            width : Dimensions.get('window').width*0.4,
+                            height : 20,
+                            alignContent : 'center',
+                            justifyContent : 'center',
+                            backgroundColor : '#a8b61e'
+                        }}
+                        onPress={()=>{this.signout()}}
+                    >
+                        <Text>Sign out</Text>
                     </TouchableOpacity>
                 </View>
             )
