@@ -36,6 +36,7 @@ export default class profileScreen extends React.Component {
             console.error(error.message);
         });
     await this.checkLoggedIn();
+    console.log(firebase.auth().currentUser);
     }
     signup=async(email,password)=>{
         await firebase.auth().createUserWithEmailAndPassword(email,password).then(()=>{

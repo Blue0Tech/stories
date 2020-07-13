@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, TextInput, Dimensions, TouchableOpacity, Platform, KeyboardAvoidingView, ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import db from '../config';
+import firebase from 'firebase';
 
 export default class writeScreen extends React.Component {
 	constructor() {
@@ -13,8 +14,8 @@ export default class writeScreen extends React.Component {
 			stories : []
 		}
 	}
-	addStoryOnline=async(author,name,story,timestamp)=>{ //firebase
-		db.ref('stories/all/'+author+'/'+name).update({
+	addStoryOnline=async(author,name,story,timestamp,uid)=>{ //firebase
+		db.ref('stories/all/'+uid+'/'+name).update({
 			contents : story,
 			timestamp : timestamp,
 			author : author, // to assist search function
@@ -110,7 +111,7 @@ export default class writeScreen extends React.Component {
 						}}
 						onPress = {async()=>{/*this.addStory(this.state.story)*/
 							var timestamp =  Date.now();
-							await this.addStoryOnline(this.state.author,this.state.name,this.state.story,timestamp);
+							await this.addStoryOnline(this.state.author,this.state.name,this.state.story,timestamp,firebase.auth().currentUser.uid);
 							this.displayToast();
 						}}
 					>
