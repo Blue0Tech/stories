@@ -44,7 +44,7 @@ export default class readScreen extends React.Component {
             alignItems : 'center',
             backgroundColor : '#00ffff',
             borderColor : '#000000',
-            borderBottomWidth : 1,
+            borderBottomWidth: StyleSheet.hairlineWidth,
             borderTopWidth : 1,
             margin : 10
         };

@@ -46,7 +46,6 @@ export default class writeScreen extends React.Component {
 						}}
 						onChangeText = {
 							text => {
-								text = this.replaceText(text);
 								this.setState({ author : text });
 							}
 						}

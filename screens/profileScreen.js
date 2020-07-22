@@ -11,11 +11,13 @@ export default class profileScreen extends React.Component {
             password : ""
         };
     }
+    componentDidMount() {
+        this.checkLoggedIn();
+    }
     checkLoggedIn=async()=>{
         console.log("checking logged in");
         var loggedIn = this.state.loggedIn;
         await firebase.auth().onAuthStateChanged(function(user) {
-            console.log(user);
             if (user) {
             loggedIn = true;
             } else {
@@ -28,6 +30,7 @@ export default class profileScreen extends React.Component {
         });
     }
     signin=async(email,password)=>{
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
         await firebase.auth().signInWithEmailAndPassword(email,password).then(()=>{
             Alert.alert("success");
             console.log("success");
@@ -46,6 +49,7 @@ export default class profileScreen extends React.Component {
             Alert.alert(error.message);
             console.error(error.message);
         });
+        await this.checkLoggedIn();
     }
     signout=async()=>{
         await firebase.auth().signOut().then(()=>{
@@ -61,6 +65,15 @@ export default class profileScreen extends React.Component {
         if(this.state.loggedIn) {
             return (
                 <View>
+                    <View>
+                        <Text
+                        style={{
+                            alignSelf : 'center',
+                            alignContent : 'center',
+                            justifyContent : 'center'
+                        }}>{firebase.auth().currentUser.email}
+                        </Text>
+                    </View>
                     <TouchableOpacity
                         style = {{
                             alignSelf : 'center',
