@@ -1,4 +1,6 @@
 import firebase from 'firebase';
+// import 'firebase/analytics'; apparently firebase analytics doesn't work in react-native
+import 'firebase/auth';
 
 var firebaseConfig = {
   apiKey: "AIzaSyD7lOKCeOh7mfTOulu57_v0ErCaHXL_XT0",
@@ -12,6 +14,6 @@ var firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
+// firebase.analytics(); apparently firebase analytics doesn't work in react-native
 
 export default firebase.database();

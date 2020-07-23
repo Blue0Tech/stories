@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TextInput, Dimensions, TouchableOpacity, Platform, KeyboardAvoidingView, ToastAndroid } from 'react-native';
+import { Text, TextInput, Dimensions, TouchableOpacity, Platform, KeyboardAvoidingView, ToastAndroid, Alert, StatusBar, Keyboard, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import db from '../config';
 import firebase from 'firebase';
@@ -15,12 +15,17 @@ export default class writeScreen extends React.Component {
 		}
 	}
 	addStoryOnline=async(author,name,story,timestamp,uid)=>{ //firebase
-		db.ref('stories/all/'+uid+'/'+name).update({
-			contents : story,
-			timestamp : timestamp,
-			author : author, // to assist search function
-			name : name // also to assist search function
-		});
+		if(firebase.auth().currentUser.emailVerified) {
+			db.ref('stories/all/'+uid+'/'+name).update({
+				contents : story,
+				timestamp : timestamp,
+				author : author, // to assist search function
+				name : name // also to assist search function
+			});
+		} else {
+			Alert.alert("Please verify your email to upload a story!");
+			console.error("Please verify your email to upload a story!");
+		}
 	}
 	displayToast=()=>{
 		if(Platform.OS === "android") {
@@ -34,7 +39,8 @@ export default class writeScreen extends React.Component {
 	render() {
 		const behavior = Platform.OS === "ios" ? "position" : "";
 		return (
-				<KeyboardAvoidingView style={{flex : 1, alignContent : 'center'}} behavior={behavior} enabled>
+			<ScrollView keyboardShouldPersistTaps='handled'>
+				<KeyboardAvoidingView style={{flex : 1, alignContent : 'center', marginTop : StatusBar.currentHeight}} behavior={behavior} enabled>
 					<TextInput
 						style = {{
 							width : Dimensions.get('window').width*0.9,
@@ -52,8 +58,11 @@ export default class writeScreen extends React.Component {
 						value = {
 							this.state.author
 						}
+						returnKeyType={'next'}
+						onSubmitEditing={()=>{ this.Title.focus(); }}
+						blurOnSubmit={false}
 						placeholder = {
-							"Enter your name here!"
+							"Name"
 						}
 					/>
 					<TextInput
@@ -73,8 +82,12 @@ export default class writeScreen extends React.Component {
 						value = {
 							this.state.name
 						}
+						returnKeyType={'next'}
+						ref={(input) => { this.Title = input; }}
+						onSubmitEditing={()=>{ this.Story.focus(); }}
+						blurOnSubmit={false}
 						placeholder = {
-							"Enter your story name here!"
+							"Title"
 						}
 					/>
 					<TextInput
@@ -95,8 +108,9 @@ export default class writeScreen extends React.Component {
 						value = {
 							this.state.story
 						}
+						ref={(input) => { this.Story = input; }}
 						placeholder = {
-							"Enter your own story here!"
+							"Story"
 						}
 					/>
 					<TouchableOpacity
@@ -117,6 +131,7 @@ export default class writeScreen extends React.Component {
 						<Text style={{alignSelf : 'center'}}>Submit</Text>
 					</TouchableOpacity>
 				</KeyboardAvoidingView>
+			</ScrollView>
 		)
 	}
 }

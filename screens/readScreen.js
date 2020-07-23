@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyboardAvoidingView, Platform, Text, Dimensions, View, FlatList } from 'react-native';
+import { KeyboardAvoidingView, Platform, Text, Dimensions, View, FlatList, StyleSheet, StatusBar, Keyboard } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import db from '../config';
 
@@ -49,7 +49,7 @@ export default class readScreen extends React.Component {
             margin : 10
         };
         return (
-            <KeyboardAvoidingView style={{flex : 1, alignContent : 'center'}} behavior={behavior} enabled>
+            <KeyboardAvoidingView style={{flex : 1, alignContent : 'center', marginTop : StatusBar.currentHeight}} behavior={behavior} enabled>
                 <SearchBar
                     style = {{
                         placeholder : 'Search',
