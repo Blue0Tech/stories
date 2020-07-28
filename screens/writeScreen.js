@@ -8,28 +8,51 @@ export default class writeScreen extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			author : "",
 			name : "",
 			story : "",
 			stories : []
 		}
 	}
-	addStoryOnline=async(author,name,story,timestamp,uid)=>{ //firebase
+	addStoryOnline=async(name,story,timestamp,uid)=>{ //firebase
+		var author = await firebase.auth().currentUser.displayName;
+		console.log(author)
 		if(firebase.auth().currentUser.emailVerified) {
-			db.ref('stories/all/'+uid+'/'+name).update({
-				contents : story,
-				timestamp : timestamp,
-				author : author, // to assist search function
-				name : name // also to assist search function
-			});
+			try {
+				db.ref('stories/all/'+uid+'/'+name).update({
+					contents : story,
+					timestamp : timestamp,
+					author : author, // to assist search function
+					name : name // also to assist search function
+				});
+				this.displayToast(0);
+		}
+		catch(e) {
+			this.displayToast(1);
+		}
 		} else {
 			Alert.alert("Please verify your email to upload a story!");
 			console.error("Please verify your email to upload a story!");
 		}
 	}
-	displayToast=()=>{
+	displayToast=(code)=>{
 		if(Platform.OS === "android") {
-			ToastAndroid.showWithGravity("Your story has been submitted!",ToastAndroid.SHORT,ToastAndroid.TOP);
+			if(code==0) {
+				ToastAndroid.showWithGravity("Your story has been submitted!",ToastAndroid.SHORT,ToastAndroid.TOP);
+			} else {
+				ToastAndroid.showWithGravity("There was an error submitting your story.",ToastAndroid.SHORT,ToastAndroid.TOP);
+			}
+		} else if(Platform.OS === "ios") {
+			if(code==0) {
+				Alert.alert("Success!","Your story has been submitted!");
+			} else {
+				Alert.alert("Error!","There was an error submitting your story.");
+			}
+		} else {
+			if(code==0) {
+				alert("Your story has been submitted!");
+			} else {
+				alert("There was an error submitting your story!");
+			}
 		}
 	}
 	replaceText=(text)=>{
@@ -41,30 +64,6 @@ export default class writeScreen extends React.Component {
 		return (
 			<ScrollView keyboardShouldPersistTaps='handled'>
 				<KeyboardAvoidingView style={{flex : 1, alignContent : 'center', marginTop : StatusBar.currentHeight}} behavior={behavior} enabled>
-					<TextInput
-						style = {{
-							width : Dimensions.get('window').width*0.9,
-							borderWidth : 2,
-							borderColor : '#000000',
-							alignSelf : 'center',
-							margin : 10,
-							marginTop : Dimensions.get('window').height*0.15
-						}}
-						onChangeText = {
-							text => {
-								this.setState({ author : text });
-							}
-						}
-						value = {
-							this.state.author
-						}
-						returnKeyType={'next'}
-						onSubmitEditing={()=>{ this.Title.focus(); }}
-						blurOnSubmit={false}
-						placeholder = {
-							"Name"
-						}
-					/>
 					<TextInput
 						style = {{
 							width : Dimensions.get('window').width*0.9,
@@ -124,8 +123,7 @@ export default class writeScreen extends React.Component {
 						}}
 						onPress = {async()=>{/*this.addStory(this.state.story)*/
 							var timestamp =  Date.now();
-							await this.addStoryOnline(this.state.author,this.state.name,this.state.story,timestamp,firebase.auth().currentUser.uid);
-							this.displayToast();
+							await this.addStoryOnline(this.state.name,this.state.story,timestamp,firebase.auth().currentUser.uid);
 						}}
 					>
 						<Text style={{alignSelf : 'center'}}>Submit</Text>
