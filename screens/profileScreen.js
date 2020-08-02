@@ -35,10 +35,10 @@ export default class profileScreen extends React.Component {
     signin=async(email,password)=>{
         firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
         await firebase.auth().signInWithEmailAndPassword(email,password).then(()=>{
-            Alert.alert("success");
+            Alert.alert("Signed in!");
             console.log("success");
         }).catch((error)=>{
-            Alert.alert(error.message);
+            Alert.alert("Error",error.message);
             console.error(error.message);
         });
         await this.checkLoggedIn();
@@ -47,20 +47,20 @@ export default class profileScreen extends React.Component {
     signup=async(email,password,name)=>{
         await firebase.auth().createUserWithEmailAndPassword(email,password).then(()=>{
             this.verifyEmail();
-            Alert.alert("Please check you email to verify your account.");
+            Alert.alert("Check your email","Please check you email to verify your account.");
             console.log("Please check you email to verify your account.");
         }).catch((error)=>{
-            Alert.alert(error.message);
+            Alert.alert("Error",error.message);
             console.error(error.message);
         });
         await this.checkLoggedIn();
     }
     signout=async()=>{
         await firebase.auth().signOut().then(()=>{
-            Alert.alert("success");
+            Alert.alert("Signed out!");
             console.log("success");
         }).catch((error)=>{
-            Alert.alert(error.message);
+            Alert.alert("Error",error.message);
             console.error(error.message);
         });
     await this.checkLoggedIn();
@@ -73,7 +73,7 @@ export default class profileScreen extends React.Component {
             displayName : name
         }).catch((e)=>{
             if(Platform.OS) {
-                Alert.alert("Error!","There was an error updating your details.");
+                Alert.alert("Error","There was an error updating your details.");
             } else {
                 alert("There was an error updating your details!");
             }
@@ -94,14 +94,29 @@ export default class profileScreen extends React.Component {
             await db.ref('stories/all').update({
                 [uid] : data
             });
-    }
-    catch(e) {
-        if(Platform.OS) {
-            Alert.alert("Error!","There was an error updating your name");
-        } else {
-            alert("There was an error updating your name");
+        }
+        catch(e) {
+            if(Platform.OS) {
+                Alert.alert("Error!","There was an error updating your name");
+            } else {
+                alert("There was an error updating your name");
+            }
         }
     }
+    resetPassword=(email)=>{
+        firebase.auth().sendPasswordResetEmail(email).then(()=>{
+            if(Platform.OS) {
+                Alert.alert("Follow the instructions in your email");
+            } else {
+                alert("Follow the instructions in your email");
+            }
+        }).catch((e)=>{
+            if(Platform.OS) {
+                Alert.alert("Error",e.message);
+            } else {
+                alert(e.message);
+            }
+        });
     }
     render() {
         if(this.state.loggedIn) {
@@ -111,20 +126,26 @@ export default class profileScreen extends React.Component {
                             {firebase.auth().currentUser.emailVerified ? <Text style={{
                                 alignSelf : 'center',
                                 alignContent : 'center',
-                                justifyContent : 'center'}}>Your account has been verified.</Text> : <Text style={{
+                                justifyContent : 'center',
+                                marginBottom : 20,
+                                marginLeft : 5}}>Your account has been verified.</Text> : <Text style={{
                                 alignSelf : 'center',
                                 alignContent : 'center',
-                                justifyContent : 'center'}}>You are not verified. Please check your inbox and verify your email to access all features. If there are any issues, try and restart the app.
+                                justifyContent : 'center',
+                                marginBottom : 20,
+                                marginLeft : 5}}>You are not verified. Please check your inbox and verify your email to access all features. If there are any issues, try and restart the app.
                                 </Text>
                             }
                             <View style={{marginBottom : 20}}>
-                                <View style={{alignSelf : 'center', flex : 1, flexDirection : 'row'}}>
+                                <View style={{alignSelf : 'center', flex : 1, flexDirection : 'row', marginBottom : 50}}>
                                     <TextInput
                                         style = {{
-                                            width : Dimensions.get('window').width*0.6,
+                                            width : Dimensions.get('window').width*0.55,
+                                            height : 30,
                                             borderWidth : 2,
                                             borderColor : '#000000',
-                                            margin : 10
+                                            margin : 10,
+                                            padding : 2
                                         }}
                                         onChangeText={
                                             name => {
@@ -139,12 +160,13 @@ export default class profileScreen extends React.Component {
                                     />
                                     <TouchableOpacity
                                         style = {{
-                                            width : Dimensions.get('window').width*0.2,
-                                            height : 20,
+                                            width : Dimensions.get('window').width*0.35,
+                                            height : 30,
                                             alignContent : 'center',
                                             justifyContent : 'center',
                                             backgroundColor : '#a8b61e',
-                                            margin : 10
+                                            margin : 10,
+                                            padding : 2
                                         }}
                                         onPress={()=>{this.changeName(this.state.displayName)}}
                                     >
@@ -156,12 +178,13 @@ export default class profileScreen extends React.Component {
                         <TouchableOpacity
                             style = {{
                                 alignSelf : 'center',
-                                width : Dimensions.get('window').width*0.4,
-                                margin : 10,
-                                height : 20,
+                                width : Dimensions.get('window').width*0.8,
+                                marginTop : 10,
+                                height : 30,
                                 alignContent : 'center',
                                 justifyContent : 'center',
-                                backgroundColor : '#a8b61e'
+                                backgroundColor : '#a8b61e',
+                                padding : 2
                             }}
                             onPress={()=>{this.updateNameOnAllStories()}}
                         >
@@ -170,12 +193,13 @@ export default class profileScreen extends React.Component {
                         <TouchableOpacity
                             style = {{
                                 alignSelf : 'center',
-                                width : Dimensions.get('window').width*0.4,
-                                margin : 10,
-                                height : 20,
+                                width : Dimensions.get('window').width*0.8,
+                                marginTop : 10,
+                                height : 30,
                                 alignContent : 'center',
                                 justifyContent : 'center',
-                                backgroundColor : '#a8b61e'
+                                backgroundColor : '#a8b61e',
+                                padding : 2
                             }}
                             onPress={()=>{this.signout()}}
                         >
@@ -197,7 +221,7 @@ export default class profileScreen extends React.Component {
                             }}
                             onChangeText={
                                 email => {
-                                    this.setState({ email : email });
+                                    this.setState({ email : email.trim() });
                                 }
                             }
                             returnKeyType={'next'}
@@ -255,6 +279,20 @@ export default class profileScreen extends React.Component {
                             onPress={()=>{this.signup(this.state.email,this.state.password)}}
                         >
                             <Text style={{alignSelf : 'center'}}>Sign up</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style = {{
+                                alignSelf : 'center',
+                                width : Dimensions.get('window').width*0.4,
+                                height : 20,
+                                alignContent : 'center',
+                                justifyContent : 'center',
+                                backgroundColor : '#a8b61e',
+                                margin : 10
+                            }}
+                            onPress={()=>{this.resetPassword(this.state.email)}}
+                        >
+                            <Text style={{alignSelf : 'center'}}>Forgot password</Text>
                         </TouchableOpacity>
                     </KeyboardAvoidingView>
                 </ScrollView>
