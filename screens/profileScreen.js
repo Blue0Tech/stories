@@ -205,6 +205,7 @@ export default class profileScreen extends React.Component {
                         >
                             <Text style={{alignSelf : 'center'}}>Sign out</Text>
                         </TouchableOpacity>
+                        <Text>Thanks to freepik for providing the application icon. Application built by Pruthvi Shrikaanth.</Text>
                     </KeyboardAvoidingView>
             )
         } else {
