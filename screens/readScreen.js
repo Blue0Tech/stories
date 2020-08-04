@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyboardAvoidingView, Platform, Text, Dimensions, View, FlatList, StyleSheet, StatusBar, TouchableOpacity, Modal } from 'react-native';
+import { KeyboardAvoidingView, Platform, Text, Dimensions, View, FlatList, StyleSheet, StatusBar, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import db from '../config';
 
@@ -53,7 +53,7 @@ export default class readScreen extends React.Component {
         return (
             <KeyboardAvoidingView style={{flex : 1, alignContent : 'center', marginTop : StatusBar.currentHeight}} behavior={behavior} enabled>
                 <Modal visible={this.state.modalVisible}>
-                    <View>
+                    <ScrollView>
                         <Text style={{alignSelf : 'center', fontSize : 17, marginBottom : 20}}>{this.state.item.name}</Text>
                         <Text>{this.state.item.contents}</Text>
                         <TouchableOpacity
@@ -69,7 +69,7 @@ export default class readScreen extends React.Component {
                         onPress={()=>{
                             this.setState({modalVisible : false})
                         }}><Text>Close</Text></TouchableOpacity>
-                    </View>
+                    </ScrollView>
                 </Modal>
                 <SearchBar
                     style = {{
